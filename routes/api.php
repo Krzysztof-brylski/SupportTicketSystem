@@ -21,5 +21,9 @@ Route::post("login/",[AuthController::class,"login"])->name("user.login");
 
 
 Route::middleware('auth:sanctum')->group(function(){
+
+    //todo admin gate
+
+
     Route::post("logout/",[AuthController::class,"logout"])->name("user.logout");
 });
