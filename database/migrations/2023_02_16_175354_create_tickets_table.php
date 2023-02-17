@@ -25,7 +25,8 @@ return new class extends Migration
                 PriorityEnum::LOW]);
             $table->enum('status',[
                 StatusEnum::AWAITING,StatusEnum::OPEN,StatusEnum::CLOSED])->default(StatusEnum::AWAITING);
-            $table->foreignId("agent_id")->constrained('users');
+            $table->foreignId("agent_id")->nullable()->constrained('users');
+            $table->foreignId("author_id")->constrained('users');
             $table->foreignId("category_id")->constrained('categories');
             $table->foreignId("label_id")->constrained('labels');
             $table->timestamps();

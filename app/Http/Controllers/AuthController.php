@@ -28,7 +28,7 @@ class AuthController extends Controller
             'password'=>Hash::make($fields['password']),
         ]);
 
-        $token=$user->createToken('token-name', ["role:{$user->role}"])->plainTextToken;
+        $token=$user->createToken('token-name', ["role-{$user->role}"])->plainTextToken;
         return Response()->json(['token'=>$token],201);
     }
 
@@ -43,16 +43,19 @@ class AuthController extends Controller
         if(!Hash::check($fields['password'],$user->password)){
             return Response()->json("Forbidden",403);
         }
-        $token=$user->createToken('token-name', ["role:{$user->role}"])->plainTextToken;
+
+        $token=$user->createToken('token-name', ["role-{$user->role}"])->plainTextToken;
         return Response()->json(['token'=>$token],200);
     }
 
     /**
      * login out  user
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function logout(){
+    public function logout(Request $request){
         $user=Auth::user();
-        $user->tokens()->delete();
+        $request->user()->currentAccessToken()->delete();
         Auth::guard('web')->logout();
         return Response()->json("Logged out",200);
     }

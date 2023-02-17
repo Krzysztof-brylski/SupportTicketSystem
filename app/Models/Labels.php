@@ -12,6 +12,6 @@ class Labels extends Model
         'name',
     ];
    Public function Ticket(){
-       return $this->hasMany(Ticket::class,'label_id');
+       return $this->hasMany(Ticket::class);
    }
 }

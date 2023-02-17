@@ -15,14 +15,21 @@ class Ticket extends Model
         'files',
         'priority',
         'status',
-        'assignedAgent',
     ];
 
+    public function Author(){
+        return $this->belongsTo(User::class,'author_id');
+    }
+
+    public function Agent(){
+        return $this->belongsTo(User::class,'agent_id');
+    }
+
     public function Categories(){
-        return $this->belongsToMany(Categories::class,'category_id');
+        return $this->belongsTo(Categories::class,'category_id');
     }
 
     public function labels(){
-        return $this->belongsToMany(labels::class,'category_id');
+        return $this->belongsTo(labels::class,'label_id');
     }
 }
