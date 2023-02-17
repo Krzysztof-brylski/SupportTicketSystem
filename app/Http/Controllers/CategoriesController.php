@@ -18,7 +18,7 @@ class CategoriesController extends Controller
     public function index()
     {
         $categories = Categories::paginate(10);
-        return Response()->json($categories,200);
+        return Response()->json((new ResponseDTO($categories,"ok",false)),200);
     }
 
     /**
