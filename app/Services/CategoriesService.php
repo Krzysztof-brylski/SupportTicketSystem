@@ -16,6 +16,7 @@ class CategoriesService
 
     public function updateCategory(Categories $categories, array $data)
     {
+
         $categories->update([
             'name'=>$data['name']
         ]);

@@ -17,8 +17,8 @@ class LabelsController extends Controller
      */
     public function index()
     {
-        $labels = Labels::paginate(10);
-        return Response()->json($labels,200);
+        $label = Labels::paginate(10);
+        return Response()->json($label,200);
     }
 
     /**
@@ -46,12 +46,12 @@ class LabelsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Labels  $labels
+     * @param  \App\Models\Labels  $label
      * @return Response
      */
-    public function show(Labels $labels)
+    public function show(Labels $label)
     {
-        return Response()->json((new ResponseDTO($labels->toArray(),"ok",false))->toArray(),
+        return Response()->json((new ResponseDTO($label->toArray(),"ok",false))->toArray(),
             200);
     }
 
@@ -59,37 +59,37 @@ class LabelsController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param  \App\Models\Labels  $labels
+     * @param  \App\Models\Labels  $label
      * @return Response
      */
-    public function update(Request $request, Labels $labels)
+    public function update(Request $request, Labels $label)
     {
         $data=$request->validate([
             'name'=>'string|required|unique:\App\Models\Labels,name',
         ]);
         try{
-            (new LabelsService())->updateLabel($data, $labels);
+            (new LabelsService())->updateLabel($data, $label);
             return Response()->json((new ResponseDTO(null,"ok",false))->toArray(),
-                201);
+                200);
         }catch (\Exception $exception){
             return Response()->json((new ResponseDTO(null,$exception->getMessage(),true))->toArray(),
-                201);
+                500);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Labels  $labels
+     * @param  \App\Models\Labels  $label
      * @return Response
      */
-    public function destroy(Labels $labels)
+    public function destroy(Labels $label)
     {
-        if($labels->Ticket()->exists()){
+        if($label->Ticket()->exists()){
             return Response()->json((new ResponseDTO(null,"This label is in use",true))->toArray(),
-                500);
+                403);
         }
-        $labels->delete();
+        $label->delete();
         return Response()->json((new ResponseDTO(null,"deleted",false))->toArray(),
             200);
     }

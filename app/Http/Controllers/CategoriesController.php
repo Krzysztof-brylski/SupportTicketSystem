@@ -44,30 +44,30 @@ class CategoriesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Categories $categories
+     * @param Categories $category
      * @return \Illuminate\Http\Response
      */
-    public function show(Categories $categories)
+    public function show(Categories $category)
     {
-        return Response()->json($categories->toArray(),200);
+        return Response()->json($category->toArray(),200);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param Categories $categories
+     * @param Categories $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Categories $categories)
+    public function update(Request $request, Categories $category)
     {
         $data=$request->validate([
             'name'=>"string|required|unique:\App\Models\Categories,name"
         ]);
         try{
-            (new CategoriesService())->updateCategory($categories,$data);
+            (new CategoriesService())->updateCategory($category,$data);
             return Response()->json((new ResponseDTO(null,"created",false))->toArray(),
-                201);
+                200);
         }catch (\Exception $exception){
             return Response()->json((new ResponseDTO(null,$exception->getMessage(),true))->toArray(),
                 500);
@@ -77,16 +77,16 @@ class CategoriesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Categories $categories
+     * @param Categories $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Categories $categories)
+    public function destroy(Categories $category)
     {
-        if($categories->Ticket()->exists()){
+        if($category->Ticket()->exists()){
             return Response()->json((new ResponseDTO(null,"This category is in use",true))->toArray(),
-                500);
+                403);
         }
-        $categories->delete();
+        $category->delete();
         return Response()->json((new ResponseDTO(null,"deleted",false))->toArray(),
             200);
     }
