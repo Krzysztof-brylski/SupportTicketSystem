@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\StatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class Ticket extends Model
@@ -19,7 +20,9 @@ class Ticket extends Model
         'status',
     ];
 
-    protected $observables = ['assignAgent','updateStatus'];
+    protected $observables = ['assignAgent','updateStatus','commentTicket'];
+
+
 
     public function assignAgent(User $agent){
         DB::transaction(function () use( $agent){
@@ -38,7 +41,15 @@ class Ticket extends Model
         ]);
         $this->fireModelEvent('updateStatus', false);
     }
+    public function commentTicket($content){
 
+        $comment =  new Coments();
+        $comment->content=$content;
+        $comment->Author()->associate(Auth::user());
+        $this->Comments()->save($comment);
+
+        $this->fireModelEvent('commentTicket', false);
+    }
     public function Author(){
         return $this->belongsTo(User::class,'author_id');
     }
@@ -49,6 +60,9 @@ class Ticket extends Model
 
     public function Categories(){
         return $this->belongsTo(Categories::class,'category_id');
+    }
+    public function Comments(){
+        return $this->hasMany(Coments::class,'ticket_id');
     }
 
     public function logable(){

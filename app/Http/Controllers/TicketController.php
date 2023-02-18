@@ -108,6 +108,24 @@ class TicketController extends Controller
 
 
     /**
+     * Comment  specified ticket.
+     *
+     * @param Request $request
+     * @param Ticket $ticket
+     * @return Response
+     */
+    public function comment(Request $request, Ticket $ticket)
+    {
+        $data=$request->validate([
+            'content'=>['required','string']
+        ]);
+        $ticket->commentTicket($data['content']);
+        return Response()->json("updated",200);
+    }
+
+
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param Ticket $ticket

@@ -58,6 +58,20 @@ class TicketObserver
         $logs->save();
     }
 
-
+    /**
+     * Handle the Ticket "commentTicket" event.
+     *
+     * @param Ticket $ticket
+     * @return void
+     */
+    public function commentTicket(Ticket $ticket)
+    {
+        $logs = new Logs();
+        $logs->actionName = "ticket commented";
+        $logs->actionTime = Carbon::now();
+        $logs->User()->associate(Auth::user());
+        $logs->logable()->associate($ticket);
+        $logs->save();
+    }
 
 }

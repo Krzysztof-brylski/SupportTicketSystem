@@ -24,7 +24,7 @@ Route::post("register/",[AuthController::class,"register"])->name("user.register
 Route::post("login/",[AuthController::class,"login"])->name("user.login");
 
 
-Route::middleware(['auth:sanctum','abilities:role-admin'])->group(function(){
+Route::middleware(['auth:sanctum','ability:role-admin'])->group(function(){
     Route::apiResource("labels", LabelsController::class)->except('index');
     Route::apiResource("categories", CategoriesController::class)->except('index');
     Route::get('logs/',[LogsController::class,'index']);
@@ -34,8 +34,13 @@ Route::middleware(['auth:sanctum','abilities:role-admin'])->group(function(){
 
 
 Route::middleware('auth:sanctum')->group(function(){
-    Route::put('ticket/update/status/{ticket}',[TicketController::class,'updateStatus'])
-        ->middleware('abilities:role-agent');
+    Route::middleware(['ability:role-agent,role-admin'])->group(function(){
+        Route::put('ticket/update/status/{ticket}',[TicketController::class,'updateStatus']);
+        Route::post("ticket/comment/{ticket}", [TicketController::class,'comment']);
+
+    });
+
+
     Route::apiResource("ticket", TicketController::class)->except('update');
 
     Route::get('labels/',[LabelsController::class,'index']);
