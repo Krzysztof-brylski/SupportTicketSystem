@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\LabelsController;
+use App\Http\Controllers\LogsController;
 use App\Http\Controllers\TicketController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,15 +27,18 @@ Route::post("login/",[AuthController::class,"login"])->name("user.login");
 Route::middleware(['auth:sanctum','abilities:role-admin'])->group(function(){
     Route::apiResource("labels", LabelsController::class)->except('index');
     Route::apiResource("categories", CategoriesController::class)->except('index');
+    Route::get('logs/',[LogsController::class,'index']);
+    Route::get('logs/{logs}',[LogsController::class,'show']);
     Route::put('ticket/assign/{ticket}',[TicketController::class,'assignAgent']);
 });
 
 
 Route::middleware('auth:sanctum')->group(function(){
-    Route::put('ticket/update/status/{ticket}',[TicketController::class,'updateStatus'])->middleware('abilities:role-agent');
+    Route::put('ticket/update/status/{ticket}',[TicketController::class,'updateStatus'])
+        ->middleware('abilities:role-agent');
     Route::apiResource("ticket", TicketController::class)->except('update');
 
-
-
+    Route::get('labels/',[LabelsController::class,'index']);
+    Route::get('categories/',[CategoriesController::class,'index']);
     Route::post("logout/",[AuthController::class,"logout"])->name("user.logout");
 });

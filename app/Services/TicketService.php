@@ -17,21 +17,13 @@ class TicketService
     public function assignAgentToTicket(array $data,Ticket $ticket)
     {
         $agent=User::where('id',$data['agent_id'])->first();
-        DB::transaction(function () use($ticket, $agent){
-            $ticket->Agent()->associate($agent);
-            $ticket->save();
-            $ticket->update([
-                'status'=>StatusEnum::OPEN
-            ]);
-        });
+        $ticket->assignAgent($agent);
 
     }
 
     public function updateTicketStatus(array $data,Ticket $ticket)
     {
-        $ticket->update([
-           'status'=> $data['status'],
-        ]);
+        $ticket->updateStatus($data['status']);
     }
 
     public function createTicket($data)
