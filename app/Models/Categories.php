@@ -14,7 +14,7 @@ class Categories extends Model
     ];
 
     Public function Ticket(){
-        return $this->hasMany(Ticket::class);
+        return $this->hasMany(Ticket::class,'category_id');
     }
 
 }

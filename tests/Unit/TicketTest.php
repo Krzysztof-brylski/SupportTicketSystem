@@ -15,7 +15,7 @@ class TicketTest extends TestCase
      *
      * @return void
      */
-    public function test_example()
+    public function test_ticket_created()
     {
         $user=User::factory()->create();
         Sanctum::actingAs($user);
