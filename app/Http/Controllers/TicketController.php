@@ -120,7 +120,7 @@ class TicketController extends Controller
             'content'=>['required','string']
         ]);
         $ticket->commentTicket($data['content']);
-        return Response()->json("updated",200);
+        return Response()->json("updated",201);
     }
 
 

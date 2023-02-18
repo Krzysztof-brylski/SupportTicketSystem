@@ -22,7 +22,7 @@ class TicketObserver
         $logs->actionName = "created";
         $logs->actionTime = Carbon::now();
         $logs->User()->associate(Auth::user());
-        $logs->Log()->save($ticket);
+        $logs->logable()->associate($ticket);
         $logs->save();
     }
 

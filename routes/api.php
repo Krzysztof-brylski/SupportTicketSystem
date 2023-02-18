@@ -37,12 +37,10 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::middleware(['ability:role-agent,role-admin'])->group(function(){
         Route::put('ticket/update/status/{ticket}',[TicketController::class,'updateStatus']);
         Route::post("ticket/comment/{ticket}", [TicketController::class,'comment']);
-
     });
 
 
     Route::apiResource("ticket", TicketController::class)->except('update');
-
     Route::get('labels/',[LabelsController::class,'index']);
     Route::get('categories/',[CategoriesController::class,'index']);
     Route::post("logout/",[AuthController::class,"logout"])->name("user.logout");
