@@ -19,7 +19,7 @@ class TicketObserver
     public function created(Ticket $ticket)
     {
         $logs = new Logs();
-        $logs->actionName = "created";
+        $logs->actionName = "ticket created";
         $logs->actionTime = Carbon::now();
         $logs->User()->associate(Auth::user());
         $logs->logable()->associate($ticket);
