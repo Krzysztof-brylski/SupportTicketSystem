@@ -26,7 +26,8 @@ class CreateTicketRequest extends FormRequest
         return [
             'title'=>"string|max:100|required",
             'description'=>'string|max:1000|required',
-            'files'=>"files|nullable",
+            'files'=>"nullable",
+            'files.*'=>"file",
             'priority'=>'string|required',
             'category_id'=>'required|exists:\App\Models\Categories,id',
             'label_id'=>'required|exists:\App\Models\Labels,id'

@@ -10,6 +10,7 @@ use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class TicketService
 {
@@ -34,7 +35,13 @@ class TicketService
         $ticket->title = $data['title'];
         $ticket->description = $data['description'];
         $ticket->priority=$data['priority'];
-        //$ticket->files = $data['files'];
+        if(isset($data['files'])){
+            $filesPaths=[];
+            foreach ($data['files'] as $file){
+                array_push($filesPaths,Storage::put("ticket",$file));
+            }
+            $ticket->files=json_encode($filesPaths);
+        }
 
         $ticket->Author()->associate(Auth::user());
         $ticket->Labels()->associate($label);

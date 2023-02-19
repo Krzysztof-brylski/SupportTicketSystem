@@ -29,7 +29,8 @@ class TicketController extends Controller
     public function index(Request $request)
     {
         if($request->user()->tokenCan('role-user')){
-            $tickets=Ticket::where('user_id',Auth::id())->paginate(10);
+
+            $tickets=Ticket::where('author_id',Auth::id())->paginate(10);
             return Response()->json($tickets,200);
         }
         if($request->user()->tokenCan('role-agent')){
@@ -40,7 +41,7 @@ class TicketController extends Controller
             $tickets=Ticket::paginate(10);
             return Response()->json($tickets,200);
         }
-
+        dd($request->user()->tokenCan('role-user'));
     }
 
     /**
