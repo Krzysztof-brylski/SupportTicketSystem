@@ -18,6 +18,9 @@ class UserIsAgent implements Rule
      */
     public function passes($attribute, $value)
     {
+        if(is_null(User::where('id',$value)->first())){
+            return false;
+        }
         return (User::where('id',$value)->first()->role) == UserRolesEnum::AGENT;
     }
 

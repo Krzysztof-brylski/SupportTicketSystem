@@ -23,7 +23,6 @@ class Ticket extends Model
     protected $observables = ['assignAgent','updateStatus','commentTicket'];
 
 
-
     public function assignAgent(User $agent){
         DB::transaction(function () use( $agent){
             $this->Agent()->associate($agent);
@@ -66,7 +65,7 @@ class Ticket extends Model
     }
 
     public function logable(){
-        return $this->morphOne(logs::class,'logable');
+        return $this->morphMany(logs::class,'logable');
     }
 
     public function labels(){

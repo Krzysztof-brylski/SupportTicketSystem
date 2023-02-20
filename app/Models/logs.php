@@ -13,7 +13,9 @@ class logs extends Model
       'actionName',
       'actionTime'
     ];
-
+    protected $visible=[
+        'actionName','actionTime','user_id','id'
+    ];
     public function User(){
         return $this->belongsTo(User::class,'user_id');
     }

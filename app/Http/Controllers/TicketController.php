@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Dto\ResponseDTO;
 use App\Enums\UserRolesEnum;
 use App\Http\Requests\CreateTicketRequest;
+use App\Http\Resources\TicketPaginatorResouce;
+use App\Http\Resources\TicketResource;
 use App\Models\Ticket;
 use App\Rules\UserIsAgent;
 use App\Services\TicketService;
@@ -24,24 +26,23 @@ class TicketController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @return Response
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(Request $request)
     {
         if($request->user()->tokenCan('role-user')){
 
-            $tickets=Ticket::where('author_id',Auth::id())->paginate(10);
-            return Response()->json($tickets,200);
+            return TicketResource::collection(Ticket::where('author_id',Auth::id())
+                ->with(['Comments','Categories','Labels'])->paginate(10));
         }
         if($request->user()->tokenCan('role-agent')){
-            $tickets=Ticket::where('agent_id',Auth::id())->paginate(10);
-            return Response()->json($tickets,200);
+            return  TicketResource::collection(Ticket::where('agent_id',Auth::id())
+                ->with(['Comments','Categories','Labels'])->paginate());
         }
         if($request->user()->tokenCan('role-admin')){
-            $tickets=Ticket::paginate(10);
-            return Response()->json($tickets,200);
+            return TicketResource::collection(Ticket::with(['Comments','Categories','Labels','Logable','Author','Agent'])
+                ->paginate(10));
         }
-        dd($request->user()->tokenCan('role-user'));
     }
 
     /**
@@ -63,17 +64,17 @@ class TicketController extends Controller
      *
      * @param Ticket $ticket
      * @param Request $request
-     * @return Response
+     * @return TicketResource
      */
     public function show(Ticket $ticket,Request $request)
     {
-        if($request->user()->tokenCan('role-admin')){
-            return Response()->json($ticket,200);
+
+
+        if($request->user()->id != $ticket->author_id){
+            return Response()->json("Access deny",403);
         }
-        if($request->user()->id == $ticket->author_id or $request->user()->id == $ticket->agent_id ){
-            return Response()->json($ticket,200);
-        }
-        return Response()->json((new ResponseDTO(null,"Access deny",true ))->toArray(),403);
+        return new TicketResource(Ticket::with(['Comments','Categories','Labels','Logable','Author','Agent'])->first());
+        //
     }
 
     /**
