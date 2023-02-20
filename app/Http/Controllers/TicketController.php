@@ -140,10 +140,6 @@ class TicketController extends Controller
             $ticket->delete();
             return Response()->json($ticket,200);
         }
-        if($request->user()->id == $ticket->author_id){
-            $ticket->delete();
-            return Response()->json($ticket,200);
-        }
         return Response()->json((new ResponseDTO(null,"Access deny",true ))->toArray(),403);
 
     }

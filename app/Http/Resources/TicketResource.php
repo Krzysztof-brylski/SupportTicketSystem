@@ -23,38 +23,37 @@ class TicketResource extends JsonResource
 
        return array(
 
-            'id'=>$this->when($request->user()->tokenCan('role-admin'),function (){
-                    return $this->id;
-            }),
 
             'title'=>$this->title,
-            'description'=>$this->description,
-            'files'=>$this->files,
-            'priority'=>$this->priority,
             'status'=>$this->status,
-
-            'comments'=>$this->whenLoaded('Comments',function (){
-                return CommentsResouce::collection($this->Comments);
-            }),
+            'priority'=>$this->priority,
 
             'category'=>$this->whenLoaded('Categories',function (){
                 return $this->Categories->name;
             }),
-
             'label'=>$this->whenLoaded('Labels',function (){
                 return $this->labels->name;
             }),
 
-            'author'=>$this->when($request->user()->tokenCan('role-admin'),function (){
-                return new UserResouce($this->Author);
-            }),
-            'agent'=>$this->when($request->user()->tokenCan('role-admin'),function (){
-                return new UserResouce($this->Agent);
-            }),
+            $this->mergeWhen($request->routeIs('ticket.show'),array(
+                'description' => $this->description,
+                'files' => $this->files,
+                'comments'=>$this->whenLoaded('Comments',function (){
+                    return CommentsResouce::collection($this->Comments);
+                }),
+            )),
 
-            'logs'=>$this->when($request->user()->tokenCan('role-admin'),function (){
-                return $this->Logable;
-            }),
+            $this->mergeWhen($request->user()->tokenCan('role-admin'),array(
+
+                'id'=>$this->id,
+                'author'=>new UserResouce($this->Author),
+                'agent'=>new UserResouce($this->Agent),
+                'logs'=>$this->when($request->routeIs('ticket.show'),function (){
+                    return $this->Logable;
+                }),
+
+            )),
+
 
        );
     }
