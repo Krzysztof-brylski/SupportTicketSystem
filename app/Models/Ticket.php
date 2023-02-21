@@ -28,7 +28,7 @@ class Ticket extends Model
             $this->Agent()->associate($agent);
             $this->save();
             $this->update([
-                'status'=>StatusEnum::OPEN
+                'status'=>StatusEnum::OPEN->value
             ]);
         });
 

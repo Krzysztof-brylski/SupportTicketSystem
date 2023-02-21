@@ -4,9 +4,9 @@
 namespace App\Enums;
 
 
-class UserRolesEnum
+enum UserRolesEnum:string
 {
-    const ADMIN = "admin";
-    const AGENT = "agent";
-    const USER = "user";
+    case ADMIN = "admin";
+    case AGENT = "agent";
+    case USER = "user";
 }

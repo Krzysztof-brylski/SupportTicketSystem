@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Dto\ResponseDTO;
+use App\Enums\StatusEnum;
 use App\Enums\UserRolesEnum;
 use App\Http\Requests\CreateTicketRequest;
 use App\Http\Resources\TicketPaginatorResouce;
@@ -13,6 +14,7 @@ use App\Services\TicketService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules\Enum;
 
 class TicketController extends Controller
 {
@@ -87,7 +89,7 @@ class TicketController extends Controller
     public function updateStatus(Request $request, Ticket $ticket)
     {
         $data=$request->validate([
-           'status'=>'string|required'
+           'status'=>['string','required',new Enum(StatusEnum::class)]
         ]);
         (new TicketService())->updateTicketStatus($data, $ticket);
         return Response()->json("updated",200);

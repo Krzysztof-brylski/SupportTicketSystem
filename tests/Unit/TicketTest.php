@@ -37,7 +37,7 @@ class TicketTest extends TestCase
         $response=$this->post('api/ticket',array(
             'title'=>"test_ticket",
             'description'=>'test_ticket',
-            'priority'=>PriorityEnum::HIGH,
+            'priority'=>PriorityEnum::HIGH->value,
             'category_id'=>$category->id,
             'label_id'=>$labels->id
         ));
@@ -46,7 +46,7 @@ class TicketTest extends TestCase
         $this->assertDatabaseHas(Ticket::class,array(
             'title'=>"test_ticket",
             'description'=>'test_ticket',
-            'priority'=>PriorityEnum::HIGH,
+            'priority'=>PriorityEnum::HIGH->value,
             'category_id'=>$category->id,
             'label_id'=>$labels->id
         ));
@@ -67,7 +67,7 @@ class TicketTest extends TestCase
         $ticket= new Ticket();
         $ticket->title="test";
         $ticket->description="test";
-        $ticket->priority=PriorityEnum::HIGH;
+        $ticket->priority=PriorityEnum::HIGH->value;
         $ticket->Categories()->associate($category);
         $ticket->Labels()->associate($labels);
         $ticket->Author()->associate($user);
@@ -82,7 +82,7 @@ class TicketTest extends TestCase
     }
     public function test_ticket_agent_assigned_and_check_for_logs(){
         $user=User::factory()->create();
-        $agent=User::factory(['role'=>UserRolesEnum::AGENT])->create();
+        $agent=User::factory(['role'=>UserRolesEnum::AGENT->value])->create();
         Sanctum::actingAs($user,['role-admin']);
         $category=Categories::create([
             'name'=>'test'
@@ -95,7 +95,7 @@ class TicketTest extends TestCase
         $ticket= new Ticket();
         $ticket->title="test";
         $ticket->description="test";
-        $ticket->priority=PriorityEnum::HIGH;
+        $ticket->priority=PriorityEnum::HIGH->value;
         $ticket->Categories()->associate($category);
         $ticket->Labels()->associate($labels);
         $ticket->Author()->associate($user);
@@ -121,7 +121,7 @@ class TicketTest extends TestCase
 
     }
     public function test_ticket_status_change_and_check_for_logs(){
-        $user=User::factory(['role'=>UserRolesEnum::AGENT])->create();
+        $user=User::factory(['role'=>UserRolesEnum::AGENT->value])->create();
 
         Sanctum::actingAs($user,['role-admin']);
         $category=Categories::create([
@@ -134,21 +134,21 @@ class TicketTest extends TestCase
         $ticket= new Ticket();
         $ticket->title="test";
         $ticket->description="test";
-        $ticket->priority=PriorityEnum::HIGH;
+        $ticket->priority=PriorityEnum::HIGH->value;
         $ticket->Categories()->associate($category);
         $ticket->Labels()->associate($labels);
         $ticket->Author()->associate($user);
         $ticket->save();
 
         $response=$this->put("api/ticket/update/status/{$ticket->id}",array(
-            'status'=>StatusEnum::CLOSED
+            'status'=>StatusEnum::CLOSED->value
         ));
 
         $response->assertStatus(200);
 
         $this->assertDatabaseHas(Ticket::class,array(
             'id'=>$ticket->id,
-            'status'=>StatusEnum::CLOSED,
+            'status'=>StatusEnum::CLOSED->value,
         ));
 
         $this->assertDatabaseHas(logs::class,array(
@@ -157,8 +157,36 @@ class TicketTest extends TestCase
             'logable_type'=>"App\\Models\\Ticket"
         ));
     }
+    public function test_ticket_status_change_validation_error(){
+        $user=User::factory(['role'=>UserRolesEnum::AGENT->value])->create();
+
+        Sanctum::actingAs($user,['role-admin']);
+        $category=Categories::create([
+            'name'=>'test'
+        ]);
+
+        $labels=Labels::create([
+            'name'=>'test'
+        ]);
+        $ticket= new Ticket();
+        $ticket->title="test";
+        $ticket->description="test";
+        $ticket->priority=PriorityEnum::HIGH->value;
+        $ticket->Categories()->associate($category);
+        $ticket->Labels()->associate($labels);
+        $ticket->Author()->associate($user);
+        $ticket->save();
+
+        $response=$this->put("api/ticket/update/status/{$ticket->id}",array(
+            'status'=>"xddddd"
+        ));
+        $response->assertStatus(422);
+
+    }
+
+
     public function test_ticket_make_comment_and_check_for_logs(){
-        $user=User::factory(['role'=>UserRolesEnum::AGENT])->create();
+        $user=User::factory(['role'=>UserRolesEnum::AGENT->value])->create();
 
         Sanctum::actingAs($user,['role-admin']);
         $category=Categories::create([
@@ -172,7 +200,7 @@ class TicketTest extends TestCase
         $ticket= new Ticket();
         $ticket->title="test";
         $ticket->description="test";
-        $ticket->priority=PriorityEnum::HIGH;
+        $ticket->priority=PriorityEnum::HIGH->value;
         $ticket->Categories()->associate($category);
         $ticket->Labels()->associate($labels);
         $ticket->Author()->associate($user);

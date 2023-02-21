@@ -21,7 +21,7 @@ class UserIsAgent implements Rule
         if(is_null(User::where('id',$value)->first())){
             return false;
         }
-        return (User::where('id',$value)->first()->role) == UserRolesEnum::AGENT;
+        return (User::where('id',$value)->first()->role) == UserRolesEnum::AGENT->value;
     }
 
     /**

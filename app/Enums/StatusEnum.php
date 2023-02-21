@@ -4,9 +4,9 @@
 namespace App\Enums;
 
 
-class StatusEnum
+enum StatusEnum:string
 {
-    const AWAITING="awaiting";
-    const OPEN="open";
-    const CLOSED="closed";
+    case AWAITING="awaiting";
+    case OPEN="open";
+    case CLOSED="closed";
 }

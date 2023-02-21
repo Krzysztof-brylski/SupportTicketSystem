@@ -21,10 +21,10 @@ return new class extends Migration
             $table->text('description');
             $table->json('files')->nullable();
             $table->enum('priority',[
-                PriorityEnum::CRITICAL_HIGH,PriorityEnum::HIGH,PriorityEnum::MEDIUM,
-                PriorityEnum::LOW]);
+                PriorityEnum::CRITICAL_HIGH->value,PriorityEnum::HIGH->value,PriorityEnum::MEDIUM->value,
+                PriorityEnum::LOW->value]);
             $table->enum('status',[
-                StatusEnum::AWAITING,StatusEnum::OPEN,StatusEnum::CLOSED])->default(StatusEnum::AWAITING);
+                StatusEnum::AWAITING->value,StatusEnum::OPEN->value,StatusEnum::CLOSED->value])->default(StatusEnum::AWAITING->value);
             $table->foreignId("agent_id")->nullable()->constrained('users');
             $table->foreignId("author_id")->constrained('users');
             $table->foreignId("category_id")->constrained('categories');
